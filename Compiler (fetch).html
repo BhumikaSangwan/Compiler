@@ -1,0 +1,279 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiler</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Source+Code+Pro:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        #container {
+            margin: 2% auto;
+            padding: 2%;
+            width: 80%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        #choice {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1%;
+        }
+
+        .box {
+            width: 20%;
+            height: 5vh;
+            margin: 1% 0;
+        }
+
+        #language,
+        #editor {
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+        }
+
+        .bold {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        #editor {
+            height: 40vh;
+            width: 100%;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1rem;
+            word-spacing: 0.3em;
+            line-height: 1.5;
+            color: #2c3e50;
+            background-color: #ffffff;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        #result {
+            height: 30vh;
+            width: 100%;
+            border: 2px solid #bdc3c7;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px;
+            overflow-y: scroll;
+            border-radius: 5px;
+            margin-top: 1%;
+        }
+
+        #compileBtn {
+            width: 15%;
+            height: 5vh;
+            background-color: #3498db;
+            color: white;
+            font-size: 1rem;
+            margin: 1% 0 2% 0;
+            border: 2px solid #2980b9;
+            border-radius: 5px;
+            box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: #2980b9;
+                cursor: pointer;
+            }
+        }
+
+        .ace-monokai .ace_gutter {
+            background: #dadadc;
+            color: #464748;
+            width: 30px;
+            border-right: 2px solid #bdc3c7;
+        }
+
+        .ace-monokai .ace_marker-layer .ace_active-line {
+            background: #d9dbdb;
+        }
+
+        .ace-monokai .ace_cursor {
+            color: #2c3e50;
+        }
+
+        .ace_string {
+            color: brown !important;
+        }
+
+        .ace-monokai .ace_keyword,
+        .ace-monokai .ace_punctuation {
+            color: #2c3e50;
+        }
+
+        .ace-monokai .ace_bracket {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="container">
+        <div id="choice">
+            <div class="box bold">Compiler</div>
+            <select class="box" id="language">
+                <option value="Python" id="0">Python</option>
+                <option value="JS" id="4">Javascript</option>
+                <option value="C" id="7">C</option>
+                <option value="CPP" id="77">C++</option>
+                <option value="Java" id="8">Java</option>
+            </select>
+        </div>
+        <div class="codeBox" id="description">
+            <!-- <textarea placeholder="Write your code here..." id="codeField" name="description"></textarea> -->
+            <div id="editor">//Type your code here</div>
+        </div>
+
+        <div id="compile">
+            <button id="compileBtn">Compile</button>
+        </div>
+        <div class="codeBox">
+            <div id="output" class="bold">Output</div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/javascript");
+    editor.setShowPrintMargin(false);
+
+    let compileBtn = document.querySelector("#compileBtn");
+    let language = document.querySelector("#language");
+    let output = document.querySelector("#result");
+
+    language.addEventListener('change', function () {
+        const selectedLanguage = language.value;
+
+        if (selectedLanguage === 'C') {
+            editor.session.setMode("ace/mode/c_cpp");
+            editor.setValue(`#include <stdio.h>\nint main()\n{\n\n    return 0;\n}`, -1);
+        } else if (selectedLanguage === 'CPP') {
+            editor.session.setMode("ace/mode/C++");
+            editor.setValue(`#include <iostream>\n#include<cstdio>\n#include<cmath>\nusing namespace std;\nint main()\n{\n\n    return 0;\n}`, -1);
+        } else if (selectedLanguage === 'Python') {
+            editor.session.setMode("ace/mode/python");
+            editor.setValue(`//Type your code here`, -1);
+        } else if (selectedLanguage === 'JS') {
+            editor.session.setMode("ace/mode/Javascript");
+            editor.setValue(`//Type your code here`, -1);
+        } else {
+            editor.session.setMode("ace/mode/Java");
+            editor.setValue(`import java.util.Scanner;\n// Other imports go here\n// Do NOT change the class name\nclass Main\n{\n    public static void main(String[] args)\n{\n        // Write your code here\n    }\n    }`, -1);
+        }
+    });
+
+    function languageId(lang) {
+        switch (lang) {
+            case 'Python': return 0;
+            case 'JS': return 4;
+            case 'C': return 7;
+            case 'CPP': return 77;
+            case 'Java': return 8;
+        }
+    }
+
+    const runCode = async (id) => {
+        const fetchResult = await fetch(`https://course.codequotient.com/api/codeResult/${id}`)
+        console.log(fetchResult, "fetchresult")
+        let data = await fetchResult.json();
+        console.log(data);
+        data = JSON.parse(data.data);
+        console.log(data);
+        if (data.status === 200) {
+            compileBtn.disabled = false;
+        }
+        else
+            compileBtn.disabled = true;
+
+
+        return new Promise((resolve, reject) => {
+            if (data.status === 'Pending') {
+                let intervalId = setTimeout(async () => {
+                    const fetchResult = await fetch(`https://course.codequotient.com/api/codeResult/${id}`);
+                    let data = await fetchResult.json();
+                    data = JSON.parse(data.data);
+                    if (data.status === 'Pending') {
+                        return;
+                    }
+                    clearInterval(intervalId);
+                    resolve(data);
+                    compileBtn.disabled = true;
+                }, 3000);
+            } else {
+                compileBtn.disabled = false;
+                resolve(data);
+            }
+
+        })
+
+    }
+
+
+    compileBtn.addEventListener('click', () => {
+        let codeData = {
+            code: editor.getValue(),
+            langId: languageId(language.value)
+        }
+
+        const response = async (codeData) => {
+            let options = {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(codeData)
+            }
+            let p = await fetch("https://course.codequotient.com/api/executeCode", options);
+            let pr = await p.json();
+            console.log(pr, "pr");
+            if (pr.codeId) {
+                let data = await runCode(pr.codeId);
+                showResult(data);
+                console.log(data, "prdata");
+            }
+            else {
+                output.textContent = `Error : ${pr.error}`;
+            }
+
+        }
+
+        response(codeData)
+
+        function showResult(result) {
+            compileBtn.disabled = false;
+            if (result.output !== "") {
+                output.textContent = result.output;
+
+            } else {
+                output.textContent = result.errors;
+            }
+        }
+    })
+
+</script>
+
+</html>
